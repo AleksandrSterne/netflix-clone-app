@@ -1,7 +1,12 @@
 import Input from '@/components/Input';
+import axios from 'axios';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 
 const Auth = () => {
+    const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -13,6 +18,35 @@ const Auth = () => {
             currentVariant === 'login' ? 'register' : 'login'
         );
     }, []);
+
+    const login = useCallback(async () => {
+        try {
+            await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+                callbackUrl: '/',
+            });
+
+            router.push('/');
+        } catch (error) {
+            console.log(error);
+        }
+    }, [email, password, router]);
+
+    const register = useCallback(async () => {
+        try {
+            await axios.post('/api/register', {
+                email,
+                name,
+                password,
+            });
+
+            login();
+        } catch (error) {
+            console.log(error);
+        }
+    }, [email, name, password, login]);
 
     return (
         <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
@@ -55,7 +89,10 @@ const Auth = () => {
                                 value={password}
                             />
                         </div>
-                        <button className="w-full py-3 mt-10 text-white transition bg-red-600 rounded-md hover:bg-red-700">
+                        <button
+                            onClick={variant === 'login' ? login : register}
+                            className="w-full py-3 mt-10 text-white transition bg-red-600 rounded-md hover:bg-red-700"
+                        >
                             {variant === 'login' ? 'Login' : 'Sign up'}
                         </button>
                         <p className="mt-12 text-neutral-500">
