@@ -3,6 +3,8 @@ import axios from 'axios';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
+import { FaGithub } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 
 const Auth = () => {
     const router = useRouter();
@@ -95,6 +97,24 @@ const Auth = () => {
                         >
                             {variant === 'login' ? 'Login' : 'Sign up'}
                         </button>
+                        <div className="flex flex-row items-center justify-center gap-4 mt-8">
+                            <div
+                                onClick={() =>
+                                    signIn('google', { callbackUrl: '/' })
+                                }
+                                className="flex items-center justify-center w-10 h-10 transition bg-white rounded-full cursor-pointer hover:opacity-80"
+                            >
+                                <FcGoogle size={30} />
+                            </div>
+                            <div
+                                onClick={() =>
+                                    signIn('github', { callbackUrl: '/' })
+                                }
+                                className="flex items-center justify-center w-10 h-10 transition bg-white rounded-full cursor-pointer hover:opacity-80"
+                            >
+                                <FaGithub size={30} />
+                            </div>
+                        </div>
                         <p className="mt-12 text-neutral-500">
                             {variant === 'login'
                                 ? 'First time using Netflix?'
